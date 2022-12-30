@@ -1,10 +1,10 @@
 export type ListicleInfo = {
-  id: number;
+  id: string;
   title: string;
 };
 
 export type ListicleEntry = {
-  id: number;
+  id: string;
   text: string;
 };
 

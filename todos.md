@@ -1,6 +1,6 @@
 # Todos
 
-- [ ] - create a global, or shared, `EventEmitter` on the server
+- [x] - create a global, or shared, `EventEmitter` on the server
   - This ir probably still needed to listen to events and then send them to client
   - How to we post data to server, and then listen to that in our `eventStream`?
 - [x] - create a page `/listicle/{id}` which scopes who receives the message

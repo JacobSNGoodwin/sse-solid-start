@@ -7,7 +7,7 @@
     "build": "solid-start build",
     "start": "concurrently -c magenta,blue -n app,db \"pnpm start:solid\" \"pnpm start:db\"",
     "start:solid": "solid-start start",
-    "start:db": "json-server -w db.json -p 3001 -d 500"
+    "start:db": "json-server -w db.json -p 3001 -d 200"
   },
   "type": "module",
   "devDependencies": {

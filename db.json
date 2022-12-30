@@ -1,14 +1,14 @@
 {
   "listicles": [
     { "id": "1", "title": "Top CDMX Tacos" },
-    { "id": "2", "title": "Most Overrated Cities" },
-    { "id": "3", "title": "Best Chicken and Sugar Sauce" }
+    { "id": "2", "title": "Most Overrated Destinations" },
+    { "id": "3", "title": "Chicken and Sugary Sauce" }
   ],
   "entries": [
     { "id": "1", "text": "Tacos Charly", "listicleId": "1" },
     { "id": "2", "text": "El Vilsito", "listicleId": "1" },
     { "id": "3", "text": "Tacos El Cumbre", "listicleId": "1" },
-    { "id": "4", "text": "London", "listicleId": "2" },
+    { "id": "4", "text": "Bali", "listicleId": "2" },
     { "id": "5", "text": "Chick-Fil-A", "listicleId": "3" },
     { "id": "6", "text": "Pluck'd", "listicleId": "3" },
     { "id": "7", "text": "Cane's", "listicleId": "3" }

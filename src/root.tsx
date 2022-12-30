@@ -26,7 +26,7 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <div class="max-w-3xl mx-auto">
+            <div class="max-w-3xl mx-auto px-4">
               <Routes>
                 <FileRoutes />
               </Routes>
