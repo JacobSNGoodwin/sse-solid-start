@@ -1,4 +1,4 @@
-import { createSignal, For, Suspense } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 import { A, RouteDataArgs, Title, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
 
@@ -13,19 +13,21 @@ export function routeData({ params }: RouteDataArgs) {
       );
       const data = (await response.json()) as Listicle;
 
-      console.log(`fetched listicle with id: ${key}`, data);
+      // console.log(`fetched listicle with id: ${params.id}`, data);
 
       return data;
     },
-    { key: () => params.id }
+    {
+      key: () => params.id,
+    }
   );
 }
 
 export default function List() {
   const initialListicle = useRouteData<typeof routeData>();
-  const [newListicle, setNewListicle] = createSignal<Listicle>();
+  // const [newListicle, setNewListicle] = createSignal<Listicle>();
 
-  const latestListicle = () => newListicle() ?? initialListicle();
+  // const latestListicle = () => newListicle() ?? initialListicle();
 
   return (
     <>
@@ -35,19 +37,14 @@ export default function List() {
       >
         Back to all Listicles
       </A>
-      <div class="my-4">
-        <p class="my-2">Listacle State: {initialListicle.state}</p>
-        <p class="my-2">
-          Listacle Loading: {initialListicle.loading ? 'Yea' : 'Nay'}
-        </p>
-      </div>
+
       <div class="block my-4">
         <Suspense fallback={<Loader />}>
           <Title>{initialListicle()?.title}</Title>
           <h3 class="text-2xl text-orange-700 my-4">
             {initialListicle()?.title}
           </h3>
-          <For each={latestListicle()?.entries ?? []}>
+          <For each={initialListicle()?.entries ?? []}>
             {(item) => <p class="font-bold">{item.text}</p>}
           </For>
         </Suspense>

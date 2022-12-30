@@ -6,20 +6,14 @@ import Loader from '~/components/loader';
 import { ListicleInfo } from '~/data-types';
 
 export function routeData() {
-  return createServerData$(
-    async () => {
-      const response = await fetch('http://localhost:3001/listicles');
-      const data = (await response.json()) as ListicleInfo[];
+  return createServerData$(async () => {
+    const response = await fetch('http://localhost:3001/listicles');
+    const data = (await response.json()) as ListicleInfo[];
 
-      console.log('fetched all listicles', data);
+    // console.log('fetched all listicles', data);
 
-      return data;
-    },
-
-    {
-      key: () => ({}),
-    }
-  );
+    return data;
+  });
 }
 
 export default function ListiclesList() {
@@ -30,10 +24,6 @@ export default function ListiclesList() {
       <h3 class="font-semibold text-xl text-orange-700 mb-4">
         All the Listicles!
       </h3>
-      <p class="my-2">Listacle State: {listicleData.state}</p>
-      <p class="my-2">
-        Listacle Loading: {listicleData.loading ? 'Yea' : 'Nay'}
-      </p>
 
       <Suspense fallback={<Loader />}>
         <Title>Listicles</Title>

@@ -1,5 +1,5 @@
 // @refresh reload
-import { Show, Suspense } from 'solid-js';
+import { Suspense } from 'solid-js';
 import {
   Body,
   ErrorBoundary,
@@ -10,6 +10,7 @@ import {
   Routes,
   Scripts,
   Title,
+  useIsRouting,
 } from 'solid-start';
 import Loader from './components/loader';
 import './root.css';

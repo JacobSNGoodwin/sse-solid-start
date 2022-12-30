@@ -3,11 +3,11 @@
   "scripts": {
     "dev": "concurrently -c magenta,blue -n app,db \"pnpm dev:solid\" \"pnpm dev:db\"",
     "dev:solid": "solid-start dev",
-    "dev:db": "json-server -w db.json -p 3001 -d 250",
+    "dev:db": "json-server -w db.json -p 3001 -d 150",
     "build": "solid-start build",
     "start": "concurrently -c magenta,blue -n app,db \"pnpm start:solid\" \"pnpm start:db\"",
     "start:solid": "solid-start start",
-    "start:db": "json-server -w db.json -p 3001 -d 250"
+    "start:db": "json-server -w db.json -p 3001 -d 150"
   },
   "type": "module",
   "devDependencies": {
