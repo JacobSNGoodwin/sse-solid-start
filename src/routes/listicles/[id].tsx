@@ -62,12 +62,30 @@ export default function ListiclePage() {
   // This is great, but I don't know if it updates other clients.
   const [addingItem, addItem] = createServerAction$(
     async ({ id, newItem }: { id: string; newItem: string }) => {
-      await handleAddItem(id, newItem);
+      // await handleAddItem$(id, newItem);
+      await fetch(`http://localhost:3001/entries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: newItem,
+          listicleId: id,
+        }),
+      });
+
+      const updatedListicle = await fetchListicle(id);
+
+      await sendUpdateListicle(updatedListicle);
+    },
+    {
+      invalidate: [], // wait for event to udpate UI for now.
     }
   );
 
   const handleKeyUp = (key: string, el: HTMLInputElement) => {
     if (key === 'Enter') {
+      console.log('Enter pressed! Adding Item');
       addItem({ id, newItem: el.value });
       el.value = '';
     }
