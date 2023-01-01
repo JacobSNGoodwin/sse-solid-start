@@ -2,14 +2,20 @@ import server$, { eventStream } from 'solid-start/server';
 import { Listicle } from '~/data-types';
 
 import { LISTICLE_UPDATED } from './common';
-import { eventEmitter } from './emitter';
+import { CachedEventEmitter } from './emitter';
+
+const eventEmitter = new CachedEventEmitter();
 
 export const handleListicleEvents = server$(async function () {
   return eventStream(server$.request, (send) => {
     const incomingUrl = new URL(server$.request.url);
     const id = incomingUrl.searchParams.get('id');
+    // I can't get the cached listener function to work. Maybe the send
+    // function is unique for each request. Since each response stream can be
+    //canceled based on the incoming request.
+    // Maybe we need some sort of client id created.
 
-    // if (!eventEmitter?.listeners(LISTICLE_UPDATED).length) {
+    // We can see the above also with the `id` parameter. If we change between pages, it stays with whatever the first page was.
     eventEmitter?.addWithKey(
       LISTICLE_UPDATED,
       'listicle',
@@ -25,10 +31,7 @@ export const handleListicleEvents = server$(async function () {
       }
     );
 
-    console.log(
-      'current emitters',
-      eventEmitter?.eventListeners(LISTICLE_UPDATED)
-    );
+    console.log('current emitters', eventEmitter.existingListeners);
 
     return () => {
       console.log(

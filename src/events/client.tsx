@@ -13,9 +13,7 @@ const connectToListicileEventSource = (
     // currently I can't find a way to pass the $server function reference
     // while also passing in the id. This is a workaround I don't like much.
     const eventSourceUrl = `${url}?id=${listicleId}`;
-    const eventSource = new EventSource(eventSourceUrl, {
-      withCredentials: true,
-    });
+    const eventSource = new EventSource(eventSourceUrl);
 
     console.log('EventSource created', eventSource);
 
