@@ -1,4 +1,5 @@
-import { createSignal, For, Show, Suspense } from 'solid-js';
+import { createSignal, For, onCleanup, Show, Suspense } from 'solid-js';
+import { isServer } from 'solid-js/web';
 import { A, RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerAction$, createServerData$ } from 'solid-start/server';
 
@@ -45,14 +46,25 @@ const handleAddItem = async (listicleId: string, text: string) => {
   sendUpdateListicle(updatedListicle);
 };
 
+const handleDeleteItem = async (listicleId: string, entryId: string) => {
+  await fetch(`http://localhost:3001/entries/${entryId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const updatedListicle = await fetchListicle(listicleId);
+
+  sendUpdateListicle(updatedListicle);
+};
+
 export default function ListiclePage() {
   const { id } = useParams();
   const initialListicle = useRouteData<typeof routeData>();
   const [newListicle, setNewListicle] = createSignal<Listicle>();
   const latestListicle = () => newListicle() ?? initialListicle.latest;
 
-  // TODO - prevent connection via auth. Perhaps at the page level is
-  // sufficient (with server-side row-level security)
   connectToListicileEventSource(handleListicleEvents, id, (updatedListicle) => {
     console.log('received listicle from event source', updatedListicle);
     setNewListicle(updatedListicle);
@@ -61,8 +73,29 @@ export default function ListiclePage() {
   // This seems to invalidate and recall routeData() from client.
   // This is great, but I don't know if it updates other clients.
   const [addingItem, addItem] = createServerAction$(
-    async ({ id, newItem }: { id: string; newItem: string }) => {
-      await handleAddItem(id, newItem);
+    async ({
+      listicleId,
+      newItem,
+    }: {
+      listicleId: string;
+      newItem: string;
+    }) => {
+      await handleAddItem(listicleId, newItem);
+    },
+    {
+      invalidate: [], // wait for event to udpate UI for now.
+    }
+  );
+
+  const [deletingItem, deleteItem] = createServerAction$(
+    async ({
+      entryId,
+      listicleId,
+    }: {
+      entryId: string;
+      listicleId: string;
+    }) => {
+      await handleDeleteItem(entryId, listicleId);
     },
     {
       invalidate: [], // wait for event to udpate UI for now.
@@ -71,7 +104,7 @@ export default function ListiclePage() {
 
   const handleKeyUp = (key: string, el: HTMLInputElement) => {
     if (key === 'Enter') {
-      addItem({ id, newItem: el.value });
+      addItem({ listicleId: id, newItem: el.value });
       el.value = '';
     }
   };
@@ -94,7 +127,14 @@ export default function ListiclePage() {
             {latestListicle()?.title}
           </h3>
           <For each={latestListicle()?.entries ?? []}>
-            {(item) => <p class="font-bold">{item.text}</p>}
+            {(item) => (
+              <p
+                class="font-bold"
+                onClick={() => deleteItem({ entryId: item.id, listicleId: id })}
+              >
+                {item.text}
+              </p>
+            )}
           </For>
 
           <div class="my-8">
@@ -108,7 +148,13 @@ export default function ListiclePage() {
               onKeyUp={(e) => handleKeyUp(e.key, e.currentTarget)}
               class="shadow border-4 border-purple-500 rounded w-96 py-2 px-3 text-gray-700 mt-1 mb-3 focus:outline-none focus:shadow-outline"
             />
-            <Show when={addingItem.pending || initialListicle.loading}>
+            <Show
+              when={
+                addingItem.pending ||
+                deletingItem.pending ||
+                initialListicle.loading
+              }
+            >
               <div class="my-4 block">
                 <Loader />
               </div>
